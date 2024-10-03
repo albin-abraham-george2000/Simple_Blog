@@ -1,0 +1,108 @@
+{% load compress %}
+{% load html_filters %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Blog</title>
+
+  {% compress css %}
+  <link rel="stylesheet" href="{% static 'src/output.css' %}">
+  {% endcompress %}
+</head>
+<body>
+ {% include 'navbar.html'%}
+
+  <!-- Main container -->
+  <div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      
+      <!-- Profile Column -->
+      <div class="md:col-span-1">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img class="w-full rounded-t-lg" src="{% static 'media/images/cover_sample.jpg' %}" alt="Cover image">
+          <div class="p-4 text-center">
+            <img class="w-24 h-24 rounded-full mx-auto" src="{% static 'media/images/default_user.png' %}" alt="User">
+            <h3 class="mt-2 font-bold">{{ user }}</h3>
+            <div class="mt-4">
+              <!-- Profile Form (Initially hidden) -->
+              <form id="profileForm" action="" method="POST" class="hidden transition-opacity duration-300">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-primary bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md" type="submit">Save</button>
+                <button id="cancelEdit" class="btn btn-secondary bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-md mt-2" type="button">Cancel</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Content Column -->
+      <div class="md:col-span-2">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <a id="editProfileBtn" href="javascript:void(0);" class="btn btn-warning bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-md mt-4 float-right">Edit Profile</a>
+          
+          <div class="mt-6" id="userInfo">
+            <h5 class="font-semibold">About Me</h5>
+            <p class="text-gray-600">I am a passionate web designer and developer with a love for creating beautiful and functional websites. With a deep understanding of both front-end and back-end technologies, I aim to build seamless user experiences.</p>
+          </div>
+          
+          <h5 class="font-semibold mt-6">My Posts</h5>
+          <div class="space-y-4">
+            {% for post in blogs_post %}
+            <div class="border-b border-gray-200 py-3">
+              <h6 class="text-lg font-semibold">Title: {{ post.blog_Title }}</h6>
+              <p class="text-gray-500">{{ post.blog_Desc | truncate_html_words_builtin:20 }} 
+                <a href="{% url 'Blogs:blog-detail' slug=post.slug %}" class="text-blue-500 hover:text-blue-600">Read More</a>
+              </p>
+              <small class="text-gray-400">{{ post.blog_created_at }}</small>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Drafts Column -->
+      <div class="md:col-span-1">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <h5 class="font-semibold">Drafts</h5>
+          <div class="space-y-4">
+            {% for draft in blogs_draft %}
+            <div class="border-b border-gray-200 py-2">
+              <h6 class="text-lg font-semibold">{{ draft.blog_Title }}</h6>
+              <small class="text-gray-400">{{ draft.blog_created_at }}</small>
+              <p class="text-gray-500 ">{{ draft.blog_Desc | truncate_html_words_builtin:15 }} 
+                <a href="{% url 'Blogs:blog-edit' slug=draft.slug %}" class="text-blue-500 hover:text-blue-600 py-2">Continue Editing</a>
+              </p>
+            </div>
+            {% empty %}
+            <p class="text-gray-500">No drafts available.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Toggle edit profile form and user info
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const profileForm = document.getElementById('profileForm');
+    const userInfo = document.getElementById('userInfo');
+    const cancelEdit = document.getElementById('cancelEdit');
+
+    editProfileBtn.addEventListener('click', function() {
+      userInfo.classList.add('hidden');
+      profileForm.classList.remove('hidden');
+    });
+
+    cancelEdit.addEventListener('click', function() {
+      profileForm.classList.add('hidden');
+      userInfo.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>

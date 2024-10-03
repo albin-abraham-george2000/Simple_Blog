@@ -1,0 +1,15 @@
+{% extends 'base_template.html '%}
+{% load static %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Delete Blog</h1>
+    <p>Are you sure you want to delete the blog titled "{{ blog.blog_Title }}"?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+        <a href="{% url 'Blogs:blog-detail' slug=blog.slug %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

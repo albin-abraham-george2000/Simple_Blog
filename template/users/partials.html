@@ -1,0 +1,27 @@
+
+{% load html_filters %}
+<div>
+    <!-- Label -->
+    <label for="{{ fieldname.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+        {{ fieldname.label }}
+    </label>
+
+    <!-- Field (with conditional error styling) -->
+    {{ fieldname|add_class:"block w-full px-3 py-2 text-gray-700 bg-white border rounded-md focus:ring focus:ring-indigo-200 focus:ring-opacity-50" }}
+    
+    <!-- Help Text -->
+    {% if fieldname.help_text %}
+    <ul class="text-xs text-gray-500 mt-1">
+        <li>{{ fieldname.help_text }}</li>
+    </ul>
+    {% endif %}
+    
+    <!-- Errors (with Tailwind & Flowbite styling) -->
+    {% if fieldname.errors %}
+    <ul class="mt-2 text-sm text-red-600 dark:text-red-400">
+        {% for field_error in fieldname.errors %}
+        <li>{{ field_error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>

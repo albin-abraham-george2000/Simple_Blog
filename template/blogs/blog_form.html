@@ -1,0 +1,123 @@
+{% extends 'base_template.html '%}
+{% load static %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">{{ title }}</h1>
+    <script src="https://cdn.tiny.cloud/1/8qv2xkbrgjrnmvpyehnj7tb3pl048wgfmucilxdaj3f4zs5r/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <form method="POST" class="shadow p-4 bg-light"  >
+        {% csrf_token %}
+        
+        <!-- Blog Title -->
+        <div class="form-group">
+            <label for="blog_Title">Blog Title</label>
+            <input type="text" class="form-control" id="blog_Title" name="blog_Title" value="{{ form.blog_Title.value|default_if_none:'' }}" required>
+            {% if form.blog_Title.errors %}
+                <div class="text-danger">
+                    {{ form.blog_Title.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+
+
+
+        <!-- Blog Description -->
+        <div class="form-group mt-3">
+            <label for="blog_Desc">Description</label>
+            <textarea class="form-control" id="blog_Desc" name="blog_Desc" rows="6">{{ form.blog_Desc.value|default_if_none:''|safe }}</textarea>
+            {% if form.blog_Desc.errors %}
+                <div class="text-danger">
+                    {{ form.blog_Desc.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+        
+
+        <!-- Blog Status -->
+        <div class="form-group mt-3">
+            <label for="blog_Status">Status</label>
+            <select class="form-control" id="blog_Status" name="blog_Status">
+                {% for value, display in form.blog_Status.field.choices %}
+                    <option value="{{ value }}" {% if value == form.blog_Status.value %}selected{% endif %}>{{ display }}</option>
+                {% endfor %}
+            </select>
+            {% if form.blog_Status.errors %}
+                <div class="text-danger">
+                    {{ form.blog_Status.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+        {{form.non_field_errors}}
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        <button type="button" class="btn btn-primary mt-3" onclick='Back()'>Back</button>
+    </form>
+</div>
+<script>
+    function Back(){
+      if (history.length > 1) { history.back(); 
+    } else { window.location.href='{{ fallback_url }}'; 
+}
+    }
+
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    
+        document.addEventListener('DOMContentLoaded', function() {
+    
+          
+            tinymce.init({
+                selector: 'textarea',
+                height: 360,
+                plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount autosave directionality emoticons code sample autoresize nonbreaking space',
+                toolbar: 'undo redo | formatselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link image | removeformat | code | searchreplace | anchor',
+                image_advtab: true,
+                content_css: [
+                    '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+                    'https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.2.1/skins/ui/oxide/content.inline.min.css'
+                ],
+                font_formats: 'Andale Mono=andale mono,times;' +
+                              'Arial=arial,helvetica,sans-serif;' +
+                              'Arial Black=arial black,avant garde;' +
+                              'Book Antiqua=book antiqua,palatino;' +
+                              'Comic Sans MS=comic sans ms,sans-serif;' +
+                              'Courier New=courier new,courier;' +
+                              'Georgia=georgia,palatino;' +
+                              'Helvetica=helvetica;' +
+                              'Impact=impact,chicago;' +
+                              'Symbol=symbol;' +
+                              'Tahoma=tahoma,arial,helvetica,sans-serif;' +
+                              'Terminal=terminal,monaco;' +
+                              'Times New Roman=times new roman,times;' +
+                              'Trebuchet MS=trebuchet ms,geneva;' +
+                              'Verdana=verdana,geneva;' +
+                              'Webdings=webdings;' +
+                              'Wingdings=wingdings,zapf dingbats',
+                contextmenu: 'formats link image',
+                menubar: true,
+                statusbar: true,
+
+            });
+        });
+
+
+</script>
+{% endblock %}
